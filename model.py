@@ -2,9 +2,10 @@ import torch.nn as nn
 
 class VAT(nn.Module):
 
-      def __init__(self):
+      def __init__(self, top_bn=True):
 
             super(VAT, self).__init__()
+            self.top_bn = top_bn
             self.main = nn.Sequential(
                   nn.Conv2d(3, 128, 3, 1, 1, bias=False),
                   nn.BatchNorm2d(128),
@@ -56,5 +57,7 @@ class VAT(nn.Module):
 
       def forward(self, input):
             output = self.main(input)
-            output = self.bn(self.linear(output.view(input.size()[0], -1)))
+            output = self.linear(output.view(input.size()[0], -1))
+            if self.top_bn:
+                  output = self.bn(output)
             return output

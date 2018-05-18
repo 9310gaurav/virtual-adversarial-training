@@ -45,3 +45,8 @@ def vat_loss(model, ul_x, ul_y, xi=1e-6, eps=2.5, num_iters=1):
     y_hat = model(ul_x + r_adv.detach())
     delta_kl = kl_div_with_logit(ul_y.detach(), y_hat)
     return delta_kl
+
+
+def entropy_loss(ul_y):
+    p = F.softmax(ul_y)
+    return (p*F.log_softmax(ul_y)).sum(dim=1).mean(dim=0)

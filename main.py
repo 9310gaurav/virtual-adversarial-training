@@ -10,8 +10,6 @@ eval_batch_size = 100
 unlabeled_batch_size = 128
 num_labeled = 1000
 num_valid = 1000
-num_epochs = 120
-epoch_decay_start = 80
 num_iter_per_epoch = 400
 eval_freq = 5
 lr = 0.001
@@ -22,6 +20,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', required=True, help='cifar10 | svhn')
 parser.add_argument('--dataroot', required=True, help='path to dataset')
 parser.add_argument('--use_cuda', type=bool, default=True)
+parser.add_argument('--num_epochs', type=int, default=120)
+parser.add_argument('--epoch_decay_start', type=int, default=80)
+parser.add_argument('--epsilon', default=2.5)
+parser.add_argument('--top_bn', default=True)
+parser.add_argument('--method', default='vat')
+
 
 opt = parser.parse_args()
 
@@ -40,8 +44,10 @@ def train(model, x, y, ul_x, optimizer):
     ce_loss = ce(y_pred, y)
 
     ul_y = model(ul_x)
-    v_loss = vat_loss(model, ul_x, ul_y)
+    v_loss = vat_loss(model, ul_x, ul_y, eps=opt.epsilon)
     loss = v_loss + ce_loss
+    if opt.method == 'vatent':
+        loss += entropy_loss(ul_y)
 
     optimizer.zero_grad()
     loss.backward()
@@ -100,15 +106,15 @@ valid_target, train_target = train_target[:num_valid], train_target[num_valid:, 
 labeled_train, labeled_target = train_data[:num_labeled, ], train_target[:num_labeled, ]
 unlabeled_train = train_data[num_labeled:, ]
 
-model = tocuda(VAT())
+model = tocuda(VAT(opt.top_bn))
 model.apply(weights_init)
 optimizer = optim.Adam(model.parameters(), lr=lr)
 
 # train the network
-for epoch in range(num_epochs):
+for epoch in range(opt.num_epochs):
 
-    if epoch > epoch_decay_start:
-        decayed_lr = (num_epochs - epoch) * lr / (num_epochs - epoch_decay_start)
+    if epoch > opt.epoch_decay_start:
+        decayed_lr = (opt.num_epochs - epoch) * lr / (opt.num_epochs - opt.epoch_decay_start)
         optimizer.lr = decayed_lr
         optimizer.betas = (0.5, 0.999)
 
@@ -126,7 +132,7 @@ for epoch in range(num_epochs):
         if i % 100 == 0:
             print("Epoch :", epoch, "Iter :", i, "VAT Loss :", v_loss.data[0], "CE Loss :", ce_loss.data[0])
 
-    if epoch % eval_freq == 0 or epoch + 1 == num_epochs:
+    if epoch % eval_freq == 0 or epoch + 1 == opt.num_epochs:
 
         batch_indices = torch.LongTensor(np.random.choice(labeled_train.size()[0], batch_size, replace=False))
         x = labeled_train[batch_indices]
