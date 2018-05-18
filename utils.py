@@ -48,5 +48,5 @@ def vat_loss(model, ul_x, ul_y, xi=1e-6, eps=2.5, num_iters=1):
 
 
 def entropy_loss(ul_y):
-    p = F.softmax(ul_y)
-    return (p*F.log_softmax(ul_y)).sum(dim=1).mean(dim=0)
+    p = F.softmax(ul_y, dim=1)
+    return (p*F.log_softmax(ul_y, dim=1)).sum(dim=1).mean(dim=0)
