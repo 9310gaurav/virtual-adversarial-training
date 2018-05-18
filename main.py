@@ -3,7 +3,7 @@ from torchvision import datasets, transforms
 import torch.optim as optim
 from model import *
 from utils import *
-
+import os
 
 batch_size = 32
 eval_batch_size = 100
@@ -15,6 +15,7 @@ epoch_decay_start = 80
 num_iter_per_epoch = 400
 eval_freq = 5
 lr = 0.001
+cuda_device = "0"
 
 
 parser = argparse.ArgumentParser()
@@ -24,6 +25,7 @@ parser.add_argument('--use_cuda', type=bool, default=True)
 
 opt = parser.parse_args()
 
+os.environ["CUDA_VISIBLE_DEVICES"] = cuda_device
 
 def tocuda(x):
     if opt.use_cuda:
