@@ -74,21 +74,42 @@ def weights_init(m):
         m.bias.data.fill_(0)
 
 
-train_loader = torch.utils.data.DataLoader(
-    datasets.SVHN(root=opt.dataroot, split='train', download=True,
-                  transform=transforms.Compose([
-                      transforms.ToTensor(),
-                      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-                  ])),
-    batch_size=batch_size, shuffle=True)
+if opt.dataset == 'svhn':
+    train_loader = torch.utils.data.DataLoader(
+        datasets.SVHN(root=opt.dataroot, split='train', download=True,
+                      transform=transforms.Compose([
+                          transforms.ToTensor(),
+                          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                      ])),
+        batch_size=batch_size, shuffle=True)
 
-test_loader = torch.utils.data.DataLoader(
-    datasets.SVHN(root=opt.dataroot, split='test', download=True,
-                  transform=transforms.Compose([
-                      transforms.ToTensor(),
-                      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-                  ])),
-    batch_size=eval_batch_size, shuffle=True)
+    test_loader = torch.utils.data.DataLoader(
+        datasets.SVHN(root=opt.dataroot, split='test', download=True,
+                      transform=transforms.Compose([
+                          transforms.ToTensor(),
+                          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                      ])),
+        batch_size=eval_batch_size, shuffle=True)
+
+elif opt.dataset == 'cifar10':
+    train_loader = torch.utils.data.DataLoader(
+        datasets.CIFAR10(root=opt.dataroot, split='train', download=True,
+                      transform=transforms.Compose([
+                          transforms.ToTensor(),
+                          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                      ])),
+        batch_size=batch_size, shuffle=True)
+
+    test_loader = torch.utils.data.DataLoader(
+        datasets.CIFAR10(root=opt.dataroot, split='test', download=True,
+                      transform=transforms.Compose([
+                          transforms.ToTensor(),
+                          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                      ])),
+        batch_size=eval_batch_size, shuffle=True)
+
+else:
+    raise NotImplementedError
 
 train_data = []
 train_target = []
@@ -154,4 +175,4 @@ for (data, target) in test_loader:
     test_accuracy += n*acc
     counter += n
 
-print("Test accuracy :", test_accuracy.data[0]/counter)
+print("Full test accuracy :", test_accuracy.data[0]/counter)
