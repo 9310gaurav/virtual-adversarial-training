@@ -92,6 +92,7 @@ if opt.dataset == 'svhn':
         batch_size=eval_batch_size, shuffle=True)
 
 elif opt.dataset == 'cifar10':
+    num_labeled = 4000
     train_loader = torch.utils.data.DataLoader(
         datasets.CIFAR10(root=opt.dataroot, train=True, download=True,
                       transform=transforms.Compose([
