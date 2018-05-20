@@ -93,7 +93,7 @@ if opt.dataset == 'svhn':
 
 elif opt.dataset == 'cifar10':
     train_loader = torch.utils.data.DataLoader(
-        datasets.CIFAR10(root=opt.dataroot, split='train', download=True,
+        datasets.CIFAR10(root=opt.dataroot, train=True, download=True,
                       transform=transforms.Compose([
                           transforms.ToTensor(),
                           transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
@@ -101,7 +101,7 @@ elif opt.dataset == 'cifar10':
         batch_size=batch_size, shuffle=True)
 
     test_loader = torch.utils.data.DataLoader(
-        datasets.CIFAR10(root=opt.dataroot, split='test', download=True,
+        datasets.CIFAR10(root=opt.dataroot, train=False, download=True,
                       transform=transforms.Compose([
                           transforms.ToTensor(),
                           transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
