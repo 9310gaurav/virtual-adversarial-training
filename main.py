@@ -22,7 +22,7 @@ parser.add_argument('--dataroot', required=True, help='path to dataset')
 parser.add_argument('--use_cuda', type=bool, default=True)
 parser.add_argument('--num_epochs', type=int, default=120)
 parser.add_argument('--epoch_decay_start', type=int, default=80)
-parser.add_argument('--epsilon', type=int, default=2.5)
+parser.add_argument('--epsilon', type=float, default=2.5)
 parser.add_argument('--top_bn', type=bool, default=True)
 parser.add_argument('--method', default='vat')
 
