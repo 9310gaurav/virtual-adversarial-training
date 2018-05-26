@@ -1,4 +1,5 @@
-# virtual-adversarial-training
+# Virtual Adversarial Training
+
 Pytorch implementation of "Virtual Adversarial Training: a Regularization Method for Supervised and Semi-Supervised Learning" http://arxiv.org/abs/1704.03976
 
 ## For reproducing semi-supervised learning results for SVHN :
