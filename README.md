@@ -1,5 +1,5 @@
 # Virtual Adversarial Training
-<img src="https://github.com/9310gaurav/virtual-adversarial-training/vat.gif" width="480">
+<img src="https://github.com/9310gaurav/virtual-adversarial-training/blob/master/vat.gif" width="480">
 Pytorch implementation of "Virtual Adversarial Training: a Regularization Method for Supervised and Semi-Supervised Learning" http://arxiv.org/abs/1704.03976
 
 ## For reproducing semi-supervised learning results for SVHN with VAT loss:
